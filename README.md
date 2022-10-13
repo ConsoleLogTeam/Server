@@ -1,10 +1,6 @@
-# Getting Started with Create React App / Gym App
+# Getting Started with NodeJs - Express / Gym App (M E R N)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Mongo Express React Node
-
-# Environment File
+## Environment File
 
 ### The variables of environment file are below:
 
