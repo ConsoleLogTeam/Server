@@ -8,7 +8,7 @@ export interface IPlanDetails {
     observations: string;
 }
 
-const PlanDetail = new mongoose.Schema(
+const schema = new mongoose.Schema(
     {
         exercise: {
             type: Schema.Types.ObjectId,
@@ -22,4 +22,4 @@ const PlanDetail = new mongoose.Schema(
     { collection: "PlanDetails" }
 );
 
-export const PlanDetailModel = mongoose.model<IPlanDetails>("PlanDetail", PlanDetail);
+export const PlanDetailModel = mongoose.model<IPlanDetails>("PlanDetail", schema);

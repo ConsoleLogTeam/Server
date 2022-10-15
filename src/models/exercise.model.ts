@@ -6,7 +6,7 @@ export interface IExercise {
     muscleGroup: string | IMuscleGroup;
 }
 
-const Exercise = new mongoose.Schema(
+const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
         muscleGroup: {
@@ -18,4 +18,4 @@ const Exercise = new mongoose.Schema(
     { collection: "Exercises" }
 );
 
-export const ExerciseModel = mongoose.model<IExercise>("Exercise", Exercise);
+export const ExerciseModel = mongoose.model<IExercise>("Exercise", schema);

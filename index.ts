@@ -6,6 +6,10 @@ import { useContainer, useExpressServer } from "routing-controllers";
 import Container from "typedi";
 import path from "path";
 import cors from "cors";
+import * as mongoConnection from "./src/configs/mongoose";
+import "./src/models/locality.model.ts";
+import "./src/models/country.model.ts";
+import "./src/models/province.model.ts";
 
 (async () => {
     dotenv.config();
@@ -17,7 +21,8 @@ import cors from "cors";
     useContainer(Container);
     app.use(express.json());
     app.use(cors());
-    mongoose.connect(process.env.DATABASE as string);
+
+    mongoConnection.initializeMongoose();
 
     const controllersPath = "./src/controllers/**/*.controller.ts";
 
@@ -26,6 +31,7 @@ import cors from "cors";
     });
 
     app.listen(port, () => {
+        console.log("---------------------------------------------------------------");
         console.log(`⚡️[GYM] [Server]: Server is running at https://localhost:${port}`);
     });
 })();

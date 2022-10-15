@@ -7,7 +7,7 @@ export interface IPlan {
     planDetails?: string[] | IPlanDetails[];
 }
 
-const Plan = new mongoose.Schema(
+const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
         days: { type: Number, required: true },
@@ -16,4 +16,4 @@ const Plan = new mongoose.Schema(
     { collection: "Plans" }
 );
 
-export const PlanModel = mongoose.model<IPlan>("Plan", Plan);
+export const PlanModel = mongoose.model<IPlan>("Plan", schema);

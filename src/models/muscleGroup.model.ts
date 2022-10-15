@@ -4,11 +4,11 @@ export interface IMuscleGroup {
     name: string;
 }
 
-const MuscleGroup = new mongoose.Schema(
+const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
     },
     { collection: "MuscleGroup" }
 );
 
-export const MuscleGroupModel = mongoose.model<IMuscleGroup>("MuscleGroup", MuscleGroup);
+export const MuscleGroupModel = mongoose.model<IMuscleGroup>("MuscleGroup", schema);

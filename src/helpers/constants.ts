@@ -1,4 +1,4 @@
-export enum DocumentTypes {
+export enum DocType {
     DNI = "Documento Nacional de Identidad",
     LC = "Libreta Cívica",
     PASAPORTE = "Pasaporte",
@@ -9,4 +9,13 @@ export enum UserType {
     ADMINISTRADOR = "administrador",
     ALUMNO = "alumno",
     PROFESOR = "profesor",
+}
+export enum CountryCode {
+    AR = "AR",
+    CO = "CO",
+    CL = "CL",
+    UY = "UY",
+    BO = "BO",
+    PY = "PY",
+    PE = "PE",
 }

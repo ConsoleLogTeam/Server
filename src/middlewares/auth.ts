@@ -6,7 +6,7 @@ import { Req } from "routing-controllers";
 export const authorize =
     (allowedAccessTypes: UserType[]) => async (req: Request, res: Response, next: NextFunction) => {
         try {
-            let jwt = req.headers.authorization;
+            let jwt = req.headers?.authorization ?? null;
 
             // verify request has token
             if (!jwt) {
@@ -20,7 +20,6 @@ export const authorize =
 
             // verify token hasn't expired yet
             const decodedToken = await validateToken(jwt);
-
             const hasAccessToEndpoint = allowedAccessTypes.some((access) => access === decodedToken.userType);
 
             if (!hasAccessToEndpoint) {
