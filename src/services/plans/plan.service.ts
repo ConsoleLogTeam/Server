@@ -6,8 +6,11 @@ export async function createPlan({ name, days, planDetails }: IPlan): Promise<IP
     return Doc;
 }
 
-export async function getPlans() {
-    const plans = await PlanModel.find().populate({
+export async function getPlans(user: string | undefined) {
+    const filters: { user?: string } = {};
+    if (user !== undefined) filters.user = user;
+
+    const plans = await PlanModel.find(filters).populate({
         path: "planDetails",
         populate: {
             path: "exercise",

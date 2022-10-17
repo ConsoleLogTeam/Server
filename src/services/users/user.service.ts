@@ -101,19 +101,16 @@ export async function getUsers(document: string | undefined, firstname: string |
 }
 
 export async function getUserById(id: string) {
-    const user = UserModel.findById(id)
-        .populate({
-            path: "plans",
+    const user = UserModel.findById(id).populate({
+        path: "plans",
+        populate: {
+            path: "planDetails",
             populate: {
-                path: "planDetails",
-                populate: {
-                    path: "exercise",
-                    populate: "muscleGroup",
-                },
+                path: "exercise",
+                populate: "muscleGroup",
             },
-        })
-        .populate({ path: "locality" })
-        .populate({ path: "country" })
-        .populate({ path: "province" });
+        },
+    });
+
     return user;
 }

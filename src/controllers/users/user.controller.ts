@@ -68,6 +68,7 @@ export default class UserController {
             console.log(error);
         }
     }
+
     @Get("/authcheck")
     @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.PROFESOR]))
     async getAuthCheck(@Req() req: Request, @Res() res: Response) {
@@ -78,6 +79,7 @@ export default class UserController {
             console.log(error);
         }
     }
+
     @Get("/me")
     @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.PROFESOR]))
     async getMe(@Req() req: RequestWithUser, @Res() res: Response) {

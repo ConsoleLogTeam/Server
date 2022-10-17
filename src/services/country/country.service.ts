@@ -5,7 +5,6 @@ export async function getAll(name: string | undefined) {
     if (name !== undefined) {
         filters.name = name;
     }
-    console.log(filters);
     const countries = CountryModel.find(filters);
     return countries;
 }
