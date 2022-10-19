@@ -17,6 +17,7 @@ export interface IUser {
     province: string;
     locality: string;
     address: string;
+    remainingClasses: number;
 }
 
 const User = new mongoose.Schema(
@@ -35,8 +36,9 @@ const User = new mongoose.Schema(
         province: { type: Schema.Types.ObjectId, ref: "Province", default: {} },
         locality: { type: Schema.Types.ObjectId, ref: "Locality", default: {} },
         address: { type: String },
+        remainingClasses: { type: Number, default: 0 },
     },
-    { collection: "Users" }
+    { collection: "Users", timestamps: true }
 );
 
 export const UserModel = mongoose.model<IUser>("User", User);

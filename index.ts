@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import express, { Express } from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import { useContainer, useExpressServer } from "routing-controllers";
 import Container from "typedi";
 import path from "path";
@@ -10,6 +9,8 @@ import * as mongoConnection from "./src/configs/mongoose";
 import "./src/models/locality.model.ts";
 import "./src/models/country.model.ts";
 import "./src/models/province.model.ts";
+import cron from "node-cron";
+import SchedulerService from "./src/controllers/scheduler/scheduler.service.controller";
 
 (async () => {
     dotenv.config();
@@ -33,5 +34,14 @@ import "./src/models/province.model.ts";
     app.listen(port, () => {
         console.log("---------------------------------------------------------------");
         console.log(`⚡️[GYM] [Server]: Server is running at https://localhost:${port}`);
+    });
+    // DOMINGO A LAS 23:59:59 SE REINICIA EL CONTADOR DE CLASES POR SEMANA
+    // cron.schedule("59 59 23 * * 7", () => {
+    //     const scheduler = Container.get<SchedulerService>("scheduler");
+    //     scheduler.test();
+    // });
+    cron.schedule("*/5 * * * * *", () => {
+        const scheduler = Container.get<SchedulerService>("scheduler");
+        scheduler.ResetRemainingClasses();
     });
 })();

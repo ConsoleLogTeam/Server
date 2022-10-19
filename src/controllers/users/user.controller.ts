@@ -22,7 +22,7 @@ export default class UserController {
             const user = await userService.authenticate({ email, password });
             return res.status(200).json({ user });
         } catch (error) {
-            console.log(error);
+            console.log("Error tirau", error);
             return new ErrorModel().newBadRequest("Email o contraseña ingresados son incorrectos").send(res);
         }
     }
@@ -61,8 +61,9 @@ export default class UserController {
     @UseBefore(authorize([UserType.ADMINISTRADOR]))
     async getUsers(@Req() req: Request, @Res() res: Response) {
         try {
-            const { firstname, document } = await getUsersQuerySchema.parseAsync(req.query);
-            const users = await userService.getUsers(document, firstname);
+            const { itemsPerPage, cursor } = await getUsersQuerySchema.parseAsync(req.query);
+            const nroItemsPerPage = parseInt(itemsPerPage);
+            const users = await userService.getUsers(nroItemsPerPage, cursor);
             return res.status(200).json(users);
         } catch (error) {
             console.log(error);
@@ -73,7 +74,6 @@ export default class UserController {
     @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.PROFESOR]))
     async getAuthCheck(@Req() req: Request, @Res() res: Response) {
         try {
-            console.log("asd");
             return res.status(200).json(true);
         } catch (error) {
             console.log(error);
@@ -87,6 +87,7 @@ export default class UserController {
             user: { sub },
         } = req;
         try {
+            console.log("Sub", sub);
             const user = await userService.getUserById(sub);
             return res.status(200).json(user);
         } catch (error) {

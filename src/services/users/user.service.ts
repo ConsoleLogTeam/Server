@@ -2,15 +2,20 @@ import { UserModel, IUser } from "../../models/user.model";
 import jwt from "jsonwebtoken";
 import { generateToken } from "../../helpers/jwt";
 import { UserType } from "../../helpers/constants";
-
+import { Types } from "mongoose";
+import bcrypt from "bcryptjs";
 export async function authenticate({ email, password }: { email: string; password: string }) {
     const user = await UserModel.findOne({
         email,
-        password,
     });
 
     if (!user) {
         throw new Error("Usuario Inexistente");
+    }
+    const hashResult = await bcrypt.compare(password, user.password);
+
+    if (!hashResult) {
+        throw new Error("Contraseña incorrecta");
     }
     let token = generateToken({
         sub: user._id.toString(),
@@ -55,6 +60,8 @@ export async function register({
     locality: string;
     address: string;
 }): Promise<IUser> {
+    const hash = await bcrypt.hash(password, 12);
+
     const doc = new UserModel({
         firstname,
         lastname,
@@ -62,7 +69,7 @@ export async function register({
         email,
         userType,
         username,
-        password,
+        password: hash,
         docType,
         document,
         plans,
@@ -76,14 +83,15 @@ export async function register({
     return doc;
 }
 
-export async function getUsers(document: string | undefined, firstname: string | undefined) {
-    const filters: { document?: string; firstname?: string } = {};
-    if (document !== undefined) {
-        filters.document = document;
-    }
-    if (firstname !== undefined) filters.firstname = firstname;
+export async function getUsers(itemsPerPage: number, cursor?: string) {
+    const users = UserModel.find().sort({ createdAt: 1 });
 
-    const users = UserModel.find(filters)
+    if (cursor !== undefined) {
+        users.find({ _id: { $gt: new Types.ObjectId(cursor) } });
+    }
+
+    users
+        .limit(itemsPerPage)
         .populate({
             path: "plans",
             populate: {
@@ -113,4 +121,8 @@ export async function getUserById(id: string) {
     });
 
     return user;
+}
+
+export async function decrementRemainingClasses(document: string, decrementClasses: number = 1) {
+    return await UserModel.updateOne({ document }, { remainingClasses: { $inc: -decrementClasses } });
 }

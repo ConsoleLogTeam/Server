@@ -1,6 +1,12 @@
 import { z } from "zod";
 
 export const getUsersQuerySchema = z.object({
-    document: z.string().optional(),
-    firstname: z.string().optional(),
+    itemsPerPage: z.string().refine((n) => {
+        const number = parseInt(n);
+        if (Number.isNaN(number)) {
+            return false;
+        }
+        return number > 1 && number < 10;
+    }),
+    cursor: z.string().optional(),
 });
