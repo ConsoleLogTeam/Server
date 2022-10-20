@@ -13,7 +13,6 @@ export default class CountryController {
         try {
             const { name } = await getCountriesQuerySchema.parseAsync(req.query);
             const countries = await countryService.getAll(name);
-            console.log("Countries", countries);
 
             return res.status(200).json(countries);
         } catch (error) {

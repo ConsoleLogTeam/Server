@@ -35,8 +35,6 @@ export async function register({
     phone,
     email,
     userType,
-    username,
-    password,
     docType,
     document,
     plans,
@@ -47,20 +45,18 @@ export async function register({
 }: {
     firstname: string;
     lastname: string;
-    phone: string;
+    phone?: string;
     email: string;
     userType: UserType;
-    username: string;
-    password: string;
     docType: string;
     document: string;
-    plans: string[];
+    plans?: string[];
     country: string;
     province: string;
     locality: string;
-    address: string;
+    address?: string;
 }): Promise<IUser> {
-    const hash = await bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(document, 12);
 
     const doc = new UserModel({
         firstname,
@@ -68,7 +64,7 @@ export async function register({
         phone,
         email,
         userType,
-        username,
+        username: document,
         password: hash,
         docType,
         document,
@@ -83,7 +79,7 @@ export async function register({
     return doc;
 }
 
-export async function getUsers(itemsPerPage: number, cursor?: string) {
+export async function getUsers(itemsPerPage?: number, cursor?: string) {
     const users = UserModel.find().sort({ createdAt: 1 });
 
     if (cursor !== undefined) {
@@ -91,7 +87,7 @@ export async function getUsers(itemsPerPage: number, cursor?: string) {
     }
 
     users
-        .limit(itemsPerPage)
+        .limit(itemsPerPage ?? 5)
         .populate({
             path: "plans",
             populate: {
@@ -125,4 +121,38 @@ export async function getUserById(id: string) {
 
 export async function decrementRemainingClasses(document: string, decrementClasses: number = 1) {
     return await UserModel.updateOne({ document }, { remainingClasses: { $inc: -decrementClasses } });
+}
+
+export async function updateUserById(
+    id: string,
+    userObject: {
+        firstname: string;
+        lastname: string;
+        phone: string;
+        email: string;
+        userType: string;
+        docType: string;
+        document: string;
+        country: string;
+        province: string;
+        locality: string;
+        address: string;
+    }
+) {
+    return await UserModel.updateOne(
+        { _id: id },
+        {
+            firstname: userObject.firstname,
+            lastname: userObject.lastname,
+            phone: userObject.phone,
+            email: userObject.email,
+            userType: userObject.userType,
+            docType: userObject.docType,
+            document: userObject.document,
+            country: userObject.country,
+            province: userObject.province,
+            locality: userObject.locality,
+            address: userObject.address,
+        }
+    );
 }

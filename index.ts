@@ -39,9 +39,9 @@ import SchedulerService from "./src/controllers/scheduler/scheduler.service.cont
     // cron.schedule("59 59 23 * * 7", () => {
     //     const scheduler = Container.get<SchedulerService>("scheduler");
     //     scheduler.test();
+    // // });
+    // cron.schedule("59 * * * * *", async () => {
+    //     const scheduler = Container.get<SchedulerService>("scheduler");
+    //     await scheduler.ResetRemainingClasses();
     // });
-    cron.schedule("*/5 * * * * *", () => {
-        const scheduler = Container.get<SchedulerService>("scheduler");
-        scheduler.ResetRemainingClasses();
-    });
 })();

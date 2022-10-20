@@ -4,7 +4,7 @@ import * as userService from "../../services/users/user.service";
 import { Request, Response } from "express";
 import { ErrorModel } from "../../helpers/errors";
 import { Service } from "typedi";
-import { Controller, Post, Res, Req, Get, UseBefore, Authorized } from "routing-controllers";
+import { Controller, Post, Res, Req, Get, UseBefore, Put, Patch } from "routing-controllers";
 import { userSchema } from "../../utils/validations/user.schema";
 import { authorize } from "../../middlewares/auth";
 import { UserType } from "../../helpers/constants";
@@ -22,7 +22,6 @@ export default class UserController {
             const user = await userService.authenticate({ email, password });
             return res.status(200).json({ user });
         } catch (error) {
-            console.log("Error tirau", error);
             return new ErrorModel().newBadRequest("Email o contraseña ingresados son incorrectos").send(res);
         }
     }
@@ -50,6 +49,7 @@ export default class UserController {
                     province: user.province,
                     locality: user.locality,
                     address: user.address,
+                    remainingClasses: user.remainingClasses,
                 },
             });
         } catch (error) {
@@ -62,7 +62,7 @@ export default class UserController {
     async getUsers(@Req() req: Request, @Res() res: Response) {
         try {
             const { itemsPerPage, cursor } = await getUsersQuerySchema.parseAsync(req.query);
-            const nroItemsPerPage = parseInt(itemsPerPage);
+            const nroItemsPerPage = itemsPerPage !== undefined ? parseInt(itemsPerPage) : undefined;
             const users = await userService.getUsers(nroItemsPerPage, cursor);
             return res.status(200).json(users);
         } catch (error) {
@@ -87,7 +87,6 @@ export default class UserController {
             user: { sub },
         } = req;
         try {
-            console.log("Sub", sub);
             const user = await userService.getUserById(sub);
             return res.status(200).json(user);
         } catch (error) {
@@ -103,6 +102,20 @@ export default class UserController {
         try {
             const user = await userService.getUserById(id);
             return res.status(200).json(user);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    @Patch("/:id")
+    @UseBefore(authorize([UserType.ADMINISTRADOR]))
+    async updateUserById(@Req() req: Request, @Res() res: Response) {
+        const {
+            params: { id },
+            body: user,
+        } = req;
+        try {
+            await userService.updateUserById(id, user);
+            return res.status(200).json({ message: "Usuario Actualizado" });
         } catch (error) {
             console.log(error);
         }
