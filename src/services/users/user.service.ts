@@ -4,6 +4,7 @@ import { generateToken } from "../../helpers/jwt";
 import { UserType } from "../../helpers/constants";
 import { Types } from "mongoose";
 import bcrypt from "bcryptjs";
+
 export async function authenticate({ email, password }: { email: string; password: string }) {
     const user = await UserModel.findOne({
         email,
@@ -118,9 +119,23 @@ export async function getUserById(id: string) {
 
     return user;
 }
+export async function getUserByDocument(document: string) {
+    const user = UserModel.findOne({ document }).populate({
+        path: "plans",
+        populate: {
+            path: "planDetails",
+            populate: {
+                path: "exercise",
+                populate: "muscleGroup",
+            },
+        },
+    });
+
+    return user;
+}
 
 export async function decrementRemainingClasses(document: string, decrementClasses: number = 1) {
-    return await UserModel.updateOne({ document }, { remainingClasses: { $inc: -decrementClasses } });
+    return await UserModel.findOneAndUpdate({ document }, { $inc: { remainingClasses: -decrementClasses } });
 }
 
 export async function updateUserById(

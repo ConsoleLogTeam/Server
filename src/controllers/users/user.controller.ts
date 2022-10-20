@@ -94,7 +94,21 @@ export default class UserController {
         }
     }
 
+    @Get("/:document")
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    async getUserByDocument(@Req() req: Request, @Res() res: Response) {
+        const {
+            params: { document },
+        } = req;
+        try {
+            const user = await userService.getUserByDocument(document);
+            return res.status(200).json(user);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     @Get("/:id")
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
     async getUserById(@Req() req: Request, @Res() res: Response) {
         const {
             params: { id },
@@ -107,7 +121,7 @@ export default class UserController {
         }
     }
     @Patch("/:id")
-    @UseBefore(authorize([UserType.ADMINISTRADOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
     async updateUserById(@Req() req: Request, @Res() res: Response) {
         const {
             params: { id },
@@ -116,6 +130,21 @@ export default class UserController {
         try {
             await userService.updateUserById(id, user);
             return res.status(200).json({ message: "Usuario Actualizado" });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post("/decrement/:document")
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    async decrementRemainingClasses(@Req() req: Request, @Res() res: Response) {
+        const {
+            params: { document },
+        } = req;
+
+        try {
+            await userService.decrementRemainingClasses(document, 1);
+            return res.status(200).json({ message: "Asistencia Registrada" });
         } catch (error) {
             console.log(error);
         }
