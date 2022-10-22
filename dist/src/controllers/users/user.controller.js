@@ -75,7 +75,6 @@ let UserController = class UserController {
             body: { email, password },
         } = req;
         let response;
-        console.log("Entro al controller");
         try {
             response = await userService.authenticate({ email, password });
             const { token, username } = response;

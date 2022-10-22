@@ -36,6 +36,7 @@ export default class UserController {
             return res.status(200).json({
                 message: "Usuario Registrado",
                 user: {
+                    _id: user._id,
                     firstname: user.firstname,
                     lastname: user.lastname,
                     phone: user.phone,
@@ -94,7 +95,7 @@ export default class UserController {
         }
     }
 
-    @Get("/:document")
+    @Get("/document/:document")
     @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
     async getUserByDocument(@Req() req: Request, @Res() res: Response) {
         const {
@@ -128,8 +129,12 @@ export default class UserController {
             body: user,
         } = req;
         try {
-            await userService.updateUserById(id, user);
-            return res.status(200).json({ message: "Usuario Actualizado" });
+            const response = await userService.updateUserById(id, user);
+            if (response === null) {
+                throw new Error("Usuario no encontrado");
+            }
+            const { password, ...rest } = response;
+            return res.status(200).json({ message: "Usuario Actualizado", user: rest });
         } catch (error) {
             console.log(error);
         }
@@ -143,8 +148,20 @@ export default class UserController {
         } = req;
 
         try {
-            await userService.decrementRemainingClasses(document, 1);
-            return res.status(200).json({ message: "Asistencia Registrada" });
+            const user = await userService.getUserByDocument(document);
+            if (user === null) {
+                throw new Error("Usuario no encontrado");
+            }
+            if (user?.remainingClasses === 0) {
+                throw new Error("El usuario no tiene mas clases disponibles");
+            }
+
+            const response = await userService.decrementRemainingClasses(document, 1);
+            if (response === null) {
+                throw new Error("Error");
+            }
+            const { password, ...rest } = response;
+            return res.status(200).json({ message: "Asistencia Registrada", user: rest });
         } catch (error) {
             console.log(error);
         }

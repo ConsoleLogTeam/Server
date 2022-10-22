@@ -5,7 +5,6 @@ import { UserType } from "../helpers/constants";
 import { Req } from "routing-controllers";
 export const authorize =
     (allowedAccessTypes: UserType[]) => async (req: Request, res: Response, next: NextFunction) => {
-        console.log(req.headers);
         try {
             let jwt = req.headers?.authorization ?? null;
 

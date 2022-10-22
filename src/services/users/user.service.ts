@@ -106,7 +106,7 @@ export async function getUsers(itemsPerPage?: number, cursor?: string) {
 }
 
 export async function getUserById(id: string) {
-    const user = UserModel.findById(id).populate({
+    const user = UserModel.findOne({ _id: id }).populate({
         path: "plans",
         populate: {
             path: "planDetails",
@@ -134,8 +134,12 @@ export async function getUserByDocument(document: string) {
     return user;
 }
 
-export async function decrementRemainingClasses(document: string, decrementClasses: number = 1) {
-    return await UserModel.findOneAndUpdate({ document }, { $inc: { remainingClasses: -decrementClasses } });
+export async function decrementRemainingClasses(document: string, decrementClasses: number = 1): Promise<IUser | null> {
+    return await UserModel.findOneAndUpdate(
+        { document },
+        { $inc: { remainingClasses: -decrementClasses } },
+        { new: true, lean: true }
+    );
 }
 
 export async function updateUserById(
@@ -154,7 +158,7 @@ export async function updateUserById(
         address: string;
     }
 ) {
-    return await UserModel.updateOne(
+    return await UserModel.findOneAndUpdate(
         { _id: id },
         {
             firstname: userObject.firstname,
@@ -168,6 +172,7 @@ export async function updateUserById(
             province: userObject.province,
             locality: userObject.locality,
             address: userObject.address,
-        }
+        },
+        { new: true, lean: true }
     );
 }

@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 import { DocType, UserType } from "../helpers/constants";
 
 export interface IUser {
+    _id: string;
     firstname: string;
     lastname: string;
     phone: string;
