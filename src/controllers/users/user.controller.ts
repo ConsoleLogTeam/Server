@@ -27,7 +27,7 @@ export default class UserController {
     }
 
     @Post("/register")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async register(@Req() req: Request, @Res() res: Response) {
         try {
             const userBody = await userSchema.parseAsync(req.body);
@@ -49,11 +49,14 @@ export default class UserController {
                     country: user.country,
                     province: user.province,
                     locality: user.locality,
+                    birthdate: user.birthdate,
+                    profilephoto: user.profilephoto,
                     address: user.address,
                     remainingClasses: user.remainingClasses,
                 },
             });
         } catch (error) {
+            
             return new ErrorModel().newBadRequest("Parámetros Inválidos").send(res);
         }
     }
@@ -72,7 +75,7 @@ export default class UserController {
     }
 
     @Get("/authcheck")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.ENTRENADOR]))
     async getAuthCheck(@Req() req: Request, @Res() res: Response) {
         try {
             return res.status(200).json(true);
@@ -82,7 +85,7 @@ export default class UserController {
     }
 
     @Get("/me")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ALUMNO, UserType.ENTRENADOR]))
     async getMe(@Req() req: RequestWithUser, @Res() res: Response) {
         const {
             user: { sub },
@@ -96,7 +99,7 @@ export default class UserController {
     }
 
     @Get("/document/:document")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async getUserByDocument(@Req() req: Request, @Res() res: Response) {
         const {
             params: { document },
@@ -109,7 +112,7 @@ export default class UserController {
         }
     }
     @Get("/:id")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async getUserById(@Req() req: Request, @Res() res: Response) {
         const {
             params: { id },
@@ -122,7 +125,7 @@ export default class UserController {
         }
     }
     @Patch("/:id")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async updateUserById(@Req() req: Request, @Res() res: Response) {
         const {
             params: { id },
@@ -141,7 +144,7 @@ export default class UserController {
     }
 
     @Post("/decrement/:document")
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async decrementRemainingClasses(@Req() req: Request, @Res() res: Response) {
         const {
             params: { document },

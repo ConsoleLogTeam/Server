@@ -12,5 +12,7 @@ export const userSchema = z.object({
     country: z.string(),
     province: z.string(),
     locality: z.string(),
-    address: z.string().max(80, "Max 80 characters in Address").optional(),
+    birthdate: z.string(),
+    profilephoto: z.string().optional(),
+    address: z.string().max(80, "Max 80 characters in Address"),
 });

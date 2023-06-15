@@ -17,6 +17,8 @@ export interface IUser {
     country: string;
     province: string;
     locality: string;
+    birthdate: Date;
+    profilephoto: string;
     address: string;
     remainingClasses: number;
 }
@@ -36,6 +38,8 @@ const User = new mongoose.Schema(
         country: { type: Schema.Types.ObjectId, ref: "Country", default: {} },
         province: { type: Schema.Types.ObjectId, ref: "Province", default: {} },
         locality: { type: Schema.Types.ObjectId, ref: "Locality", default: {} },
+        birthdate: { type: String },
+        profilephoto: { type: String },
         address: { type: String },
         remainingClasses: { type: Number, default: 0 },
     },

@@ -42,6 +42,8 @@ export async function register({
     country,
     province,
     locality,
+    birthdate,
+    profilephoto,
     address,
 }: {
     firstname: string;
@@ -55,6 +57,8 @@ export async function register({
     country: string;
     province: string;
     locality: string;
+    birthdate: string;
+    profilephoto?: string;
     address?: string;
 }): Promise<IUser> {
     const hash = await bcrypt.hash(document, 12);
@@ -73,8 +77,14 @@ export async function register({
         country,
         province,
         locality,
+        birthdate,
+        profilephoto,
         address,
     });
+
+    if (doc.profilephoto === undefined) {
+        doc.profilephoto = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+    }
 
     await doc.save();
     return doc;
@@ -88,7 +98,7 @@ export async function getUsers(itemsPerPage?: number, cursor?: string) {
     }
 
     users
-        .limit(itemsPerPage ?? 5)
+        .limit(itemsPerPage ?? 10)
         .populate({
             path: "plans",
             populate: {

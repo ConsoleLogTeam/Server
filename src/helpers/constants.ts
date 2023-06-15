@@ -8,7 +8,7 @@ export enum DocType {
 export enum UserType {
     ADMINISTRADOR = "administrador",
     ALUMNO = "alumno",
-    PROFESOR = "profesor",
+    ENTRENADOR = "entrenador",
 }
 export enum CountryCode {
     AR = "AR",

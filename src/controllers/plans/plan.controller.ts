@@ -11,7 +11,7 @@ import { planSchema } from "../../utils/validations/plan.schema";
 @Service()
 export default class PlansController {
     @Post()
-    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.PROFESOR]))
+    @UseBefore(authorize([UserType.ADMINISTRADOR, UserType.ENTRENADOR]))
     async createPlan(@Res() res: Response, @Req() req: Request) {
         try {
             const bodyPlan = await planSchema.parseAsync(req.body);
@@ -22,7 +22,7 @@ export default class PlansController {
         }
     }
 
-    // @UseBefore(authorize([]))
+    @UseBefore(authorize([]))
     @Get()
     async getPlans(@Res() res: Response, @Req() req: Request) {
         try {
