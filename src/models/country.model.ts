@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { CountryCode } from "../helpers/constants";
 
 export interface ICountry {}
+
 const schema = new mongoose.Schema(
     {
         isoCode: { type: String, enum: Object.values(CountryCode), required: true },

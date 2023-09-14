@@ -26,8 +26,8 @@ export async function authenticate({ email, password }: { email: string; passwor
         lastname: user.lastname,
     });
 
-    const { username } = user;
-    return { token, username };
+    const { username, _id } = user;
+    return { token, username , _id };
 }
 
 export async function register({
@@ -98,7 +98,7 @@ export async function getUsers(itemsPerPage?: number, cursor?: string) {
     }
 
     users
-        .limit(itemsPerPage ?? 10)
+        // .limit(itemsPerPage ?? 10)
         .populate({
             path: "plans",
             populate: {
