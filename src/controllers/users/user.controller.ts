@@ -12,6 +12,18 @@ import { UserType } from "../../helpers/constants";
 @Controller("/users")
 @Service()
 export default class UserController {
+
+    @Get("/test")
+    
+    async test(@Req() req: Request, @Res() res: Response) {
+        try {
+            
+            return res.status(200).json("anda");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post("/login")
     async login(@Req() req: Request, @Res() res: Response) {
         const {
